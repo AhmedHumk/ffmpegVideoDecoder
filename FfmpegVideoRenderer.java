@@ -42,7 +42,7 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
         this.numOutputBuffers = numOutputBuffers;
     }
 
-    @Override // com.google.android.exoplayer2.RendererCapabilities
+    @Override
     @SuppressLint({"WrongConstant"})
     public final int supportsFormat(Format format) {
         String mimeType = (String) Assertions.checkNotNull(format.sampleMimeType);
@@ -58,7 +58,7 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
         return RendererCapabilities.create(4, 16, 0);
     }
 
-    @Override // com.google.android.exoplayer2.video.DecoderVideoRenderer
+    @Override
     protected Decoder<DecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException> createDecoder(Format format, @Nullable CryptoConfig cryptoConfig) throws FfmpegDecoderException {
         TraceUtil.beginSection("createFfmpegVideoDecoder");
         int initialInputBufferSize = format.maxInputSize != -1 ? format.maxInputSize : DEFAULT_INPUT_BUFFER_SIZE;
@@ -69,7 +69,7 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
         return decoder;
     }
 
-    @Override // com.google.android.exoplayer2.video.DecoderVideoRenderer
+    @Override
     protected void renderOutputBufferToSurface(VideoDecoderOutputBuffer outputBuffer, Surface surface) throws FfmpegDecoderException {
         try {
             if (this.decoder == null) {
@@ -81,23 +81,23 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
         }
     }
 
-    @Override // com.google.android.exoplayer2.video.DecoderVideoRenderer
+    @Override
     protected void setDecoderOutputMode(int outputMode) {
         if (this.decoder != null) {
             this.decoder.setOutputMode(outputMode);
         }
     }
 
-    @Override // com.google.android.exoplayer2.Renderer, com.google.android.exoplayer2.RendererCapabilities
+    @Override
     public String getName() {
         return TAG;
     }
 
-    @Override // com.google.android.exoplayer2.Renderer
+    @Override
     public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed) throws ExoPlaybackException {
     }
 
-    @Override // com.google.android.exoplayer2.video.DecoderVideoRenderer
+    @Override
     protected DecoderReuseEvaluation canReuseDecoder(String decoderName, Format oldFormat, Format newFormat) {
         boolean sameMimeType = Util.areEqual(oldFormat.sampleMimeType, newFormat.sampleMimeType);
         return new DecoderReuseEvaluation(decoderName, oldFormat, newFormat, sameMimeType ? 3 : 0, sameMimeType ? 0 : 8);
