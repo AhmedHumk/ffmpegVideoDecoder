@@ -81,7 +81,7 @@ final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, Vi
         }
     }
 
-    @Override // com.google.android.exoplayer2.decoder.Decoder
+    @Override
     public String getName() {
         return "ffmpeg" + FfmpegLibrary.getVersion() + "-" + this.codecName;
     }
@@ -90,24 +90,19 @@ final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, Vi
         this.outputMode = outputMode;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Can't rename method to resolve collision */
-    @Override // com.google.android.exoplayer2.decoder.SimpleDecoder
+    @Override 
     public VideoDecoderInputBuffer createInputBuffer() {
         return new VideoDecoderInputBuffer(2);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Can't rename method to resolve collision */
-    @Override // com.google.android.exoplayer2.decoder.SimpleDecoder
+    @Override
     public VideoDecoderOutputBuffer createOutputBuffer() {
         return new VideoDecoderOutputBuffer((v1) -> {
             releaseOutputBuffer(v1);
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    @Override // com.google.android.exoplayer2.decoder.SimpleDecoder
+    @Override
     @Nullable
     public FfmpegDecoderException decode(VideoDecoderInputBuffer inputBuffer, VideoDecoderOutputBuffer outputBuffer, boolean reset) {
         if (reset) {
@@ -149,14 +144,12 @@ final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, Vi
         return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    /* JADX WARN: Can't rename method to resolve collision */
-    @Override // com.google.android.exoplayer2.decoder.SimpleDecoder
+    @Override
     public FfmpegDecoderException createUnexpectedDecodeException(Throwable error) {
         return new FfmpegDecoderException("Unexpected decode error", error);
     }
 
-    @Override // com.google.android.exoplayer2.decoder.SimpleDecoder, com.google.android.exoplayer2.decoder.Decoder
+    @Override 
     public void release() {
         super.release();
         ffmpegRelease(this.nativeContext);
