@@ -20,7 +20,6 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.DecoderVideoRenderer;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
-/* loaded from: lib_mediaplayer_exo_r2.18.2_ff4.4_video_release_20230116.aar:classes.jar:com/google/android/exoplayer2/ext/ffmpeg/FfmpegVideoRenderer.class */
 public class FfmpegVideoRenderer extends DecoderVideoRenderer {
     private static final String TAG = "FfmpegVideoRenderer";
     private static final int DEFAULT_NUM_OF_INPUT_BUFFERS = 4;
