@@ -20,15 +20,15 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.util.MimeTypes;
-import com.google.android.exoplayer2.util.Log;
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 /**
  * Configures and queries the underlying native library.
  */
 public final class FfmpegLibrary {
-    private static final String TAG = "FfmpegLibrary";
 
     static {
         loadLibrary();
@@ -43,9 +43,8 @@ public final class FfmpegLibrary {
     static void registerModule() {
         ExoPlayerLibraryInfo.registerModule("goog.exo.ffmpeg");
     }
-    private static String version;
 
-
+    private static @MonotonicNonNull String version;
     private static int inputBufferPaddingSize = C.LENGTH_UNSET;
 
     private FfmpegLibrary() {
@@ -63,12 +62,11 @@ public final class FfmpegLibrary {
         if (!isAvailable()) {
             return null;
         }
-
-        version = ffmpegGetVersion();
-
+        if (version == null) {
+            version = ffmpegGetVersion();
+        }
         return version;
     }
-
 
     /**
      * Returns the required amount of padding for input buffers in bytes, or {@link C#LENGTH_UNSET} if
@@ -98,7 +96,6 @@ public final class FfmpegLibrary {
             return false;
         }
         if (!ffmpegHasDecoder(codecName)) {
-            Log.w(TAG, "No " + codecName + " decoder available. Check the FFmpeg build configuration.");
             return false;
         }
         return true;

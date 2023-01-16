@@ -21,15 +21,15 @@ import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.decoder.SimpleDecoder;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
+import com.google.android.exoplayer2.decoder.SimpleDecoder;
 import com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer;
 import com.google.android.exoplayer2.util.Assertions;
-import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+
 
 /**
  * Ffmpeg Video decoder.
@@ -213,6 +213,8 @@ import java.util.List;
         if (!decodeOnly) {
             outputBuffer.format = inputBuffer.format;
         }
+
+
 
 
         return null;
