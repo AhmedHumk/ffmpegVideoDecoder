@@ -4,9 +4,7 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.util.MimeTypes;
-import lib.kalu.exoplayer2.util.ExoLogUtil;
 
-/* loaded from: lib_mediaplayer_exo_r2.18.2_ff4.4_video_release_20230116.aar:classes.jar:com/google/android/exoplayer2/ext/ffmpeg/FfmpegLibrary.class */
 public final class FfmpegLibrary {
     private static String version;
     private static int inputBufferPaddingSize;
@@ -68,17 +66,14 @@ public final class FfmpegLibrary {
             return false;
         }
         if (!ffmpegHasDecoder(codecName)) {
-            ExoLogUtil.log("FfmpegLibrary => supportsFormat => No " + codecName + " decoder available. Check the FFmpeg build configuration.");
             return false;
         }
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
     @Nullable
     public static String getCodecName(Format format) {
         String sampleMimeType = format.sampleMimeType;
-        ExoLogUtil.log("FfmpegLibrary => getCodecName => sampleMimeType = " + sampleMimeType);
         boolean z = true;
         switch (sampleMimeType.hashCode()) {
             case -2123537834:
