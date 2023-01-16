@@ -10,7 +10,6 @@ import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Util;
 import java.nio.ByteBuffer;
 import java.util.List;
-import lib.kalu.exoplayer2.util.ExoLogUtil;
 
 /* loaded from: lib_mediaplayer_exo_r2.18.2_ff4.4_video_release_20230116.aar:classes.jar:com/google/android/exoplayer2/ext/ffmpeg/FfmpegVideoDecoder.class */
 final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException> {
@@ -63,7 +62,6 @@ final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, Vi
             } catch (Exception e) {
                 num = 0;
             }
-            ExoLogUtil.log("FfmpegVideoDecoder => getExtraData => mimeType = " + mimeType + ", num = " + num);
             if (num <= 0) {
                 throw new Exception();
             }
@@ -146,9 +144,7 @@ final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, Vi
         if (!decodeOnly) {
             outputBuffer.format = inputBuffer.format;
         }
-        ExoLogUtil.log("decodeOnly: " + decodeOnly);
         if (needSendAgain) {
-            ExoLogUtil.log("timeUs=" + inputBuffer.timeUs + ", nendSendAagin");
             return null;
         }
         return null;
