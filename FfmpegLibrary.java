@@ -1,26 +1,40 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.android.exoplayer2.ext.ffmpeg;
 
 import androidx.annotation.Nullable;
+
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.util.MimeTypes;
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
+import lib.kalu.exoplayer2.util.ExoLogUtil;
+
+/**
+ * Configures and queries the underlying native library.
+ */
 public final class FfmpegLibrary {
-    private static String version;
-    private static int inputBufferPaddingSize;
-
-    public static native void ffmpegLogger(boolean z);
-
-    private static native String ffmpegGetVersion();
-
-    private static native int ffmpegGetInputBufferPaddingSize();
-
-    private static native boolean ffmpegHasDecoder(String str);
 
     static {
         loadLibrary();
         registerModule();
-        inputBufferPaddingSize = -1;
     }
 
     static void loadLibrary() {
@@ -32,6 +46,9 @@ public final class FfmpegLibrary {
         ExoPlayerLibraryInfo.registerModule("goog.exo.ffmpeg");
     }
 
+    private static @MonotonicNonNull String version;
+    private static int inputBufferPaddingSize = C.LENGTH_UNSET;
+
     private FfmpegLibrary() {
     }
 
@@ -39,6 +56,9 @@ public final class FfmpegLibrary {
         return true;
     }
 
+    /**
+     * Returns the version of the underlying library if available, or null otherwise.
+     */
     @Nullable
     public static String getVersion() {
         if (!isAvailable()) {
@@ -50,200 +70,98 @@ public final class FfmpegLibrary {
         return version;
     }
 
+    /**
+     * Returns the required amount of padding for input buffers in bytes, or {@link C#LENGTH_UNSET} if
+     * the underlying library is not available.
+     */
     public static int getInputBufferPaddingSize() {
         if (!isAvailable()) {
-            return -1;
+            return C.LENGTH_UNSET;
         }
-        if (inputBufferPaddingSize == -1) {
+        if (inputBufferPaddingSize == C.LENGTH_UNSET) {
             inputBufferPaddingSize = ffmpegGetInputBufferPaddingSize();
         }
         return inputBufferPaddingSize;
     }
 
+    /**
+     * Returns whether the underlying library supports the specified MIME type.
+     *
+     * @param format The MIME type to check.
+     */
     public static boolean supportsFormat(Format format) {
-        String codecName;
-        if (!isAvailable() || (codecName = getCodecName(format)) == null) {
+        if (!isAvailable()) {
+            return false;
+        }
+        @Nullable String codecName = getCodecName(format);
+        if (codecName == null) {
             return false;
         }
         if (!ffmpegHasDecoder(codecName)) {
+            ExoLogUtil.log("FfmpegLibrary => supportsFormat => No " + codecName + " decoder available. Check the FFmpeg build configuration.");
             return false;
         }
         return true;
     }
 
+    /**
+     * Returns the name of the FFmpeg decoder that could be used to decode the format, or {@code null}
+     * if it's unsupported.
+     */
     @Nullable
-    public static String getCodecName(Format format) {
+    /* package */ static String getCodecName(Format format) {
+
         String sampleMimeType = format.sampleMimeType;
-        boolean z = true;
-        switch (sampleMimeType.hashCode()) {
-            case -2123537834:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_E_AC3_JOC)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -1662541442:
-                if (sampleMimeType.equals(MimeTypes.VIDEO_H265)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -1606874997:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_AMR_WB)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -1095064472:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_DTS)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -1003765268:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_VORBIS)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -432837260:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_MPEG_L1)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -432837259:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_MPEG_L2)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case -53558318:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_AAC)) {
-                    z = false;
-                    break;
-                }
-                break;
-            case 5751993:
-                if (sampleMimeType.equals(MimeTypes.VIDEO_MPEG2)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 187078296:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_AC3)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1331836730:
-                if (sampleMimeType.equals(MimeTypes.VIDEO_H264)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1503095341:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_AMR_NB)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1504470054:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_ALAC)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1504578661:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_E_AC3)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1504619009:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_FLAC)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1504831518:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_MPEG)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1504891608:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_OPUS)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1505942594:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_DTS_HD)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1556697186:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_TRUEHD)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1903231877:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_ALAW)) {
-                    z = true;
-                    break;
-                }
-                break;
-            case 1903589369:
-                if (sampleMimeType.equals(MimeTypes.AUDIO_MLAW)) {
-                    z = true;
-                    break;
-                }
-                break;
-        }
-        switch (z) {
-            case false:
+        ExoLogUtil.log("FfmpegLibrary => getCodecName => sampleMimeType = " + sampleMimeType);
+        switch (sampleMimeType) {
+            case MimeTypes.AUDIO_AAC:
                 return "aac";
-            case true:
-            case true:
-            case true:
+            case MimeTypes.AUDIO_MPEG:
+            case MimeTypes.AUDIO_MPEG_L1:
+            case MimeTypes.AUDIO_MPEG_L2:
                 return "mp3";
-            case true:
+            case MimeTypes.AUDIO_AC3:
                 return "ac3";
-            case true:
-            case true:
+            case MimeTypes.AUDIO_E_AC3:
+            case MimeTypes.AUDIO_E_AC3_JOC:
                 return "eac3";
-            case true:
+            case MimeTypes.AUDIO_TRUEHD:
                 return "truehd";
-            case true:
-            case true:
+            case MimeTypes.AUDIO_DTS:
+            case MimeTypes.AUDIO_DTS_HD:
                 return "dca";
-            case true:
+            case MimeTypes.AUDIO_VORBIS:
                 return "vorbis";
-            case true:
+            case MimeTypes.AUDIO_OPUS:
                 return "opus";
-            case true:
+            case MimeTypes.AUDIO_AMR_NB:
                 return "amrnb";
-            case true:
+            case MimeTypes.AUDIO_AMR_WB:
                 return "amrwb";
-            case true:
+            case MimeTypes.AUDIO_FLAC:
                 return "flac";
-            case true:
+            case MimeTypes.AUDIO_ALAC:
                 return "alac";
-            case true:
+            case MimeTypes.AUDIO_MLAW:
                 return "pcm_mulaw";
-            case true:
+            case MimeTypes.AUDIO_ALAW:
                 return "pcm_alaw";
-            case true:
+            case MimeTypes.VIDEO_H264:
                 return "h264";
-            case true:
+            case MimeTypes.VIDEO_H265:
                 return "hevc";
-            case true:
+            case MimeTypes.VIDEO_MPEG2:
                 return "mpeg2video";
             default:
                 return null;
         }
     }
+
+    public static native void ffmpegLogger(boolean enable);
+
+    private static native String ffmpegGetVersion();
+
+    private static native int ffmpegGetInputBufferPaddingSize();
+
+    private static native boolean ffmpegHasDecoder(String codecName);
 }
