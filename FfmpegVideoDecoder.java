@@ -25,12 +25,11 @@ import com.google.android.exoplayer2.decoder.SimpleDecoder;
 import com.google.android.exoplayer2.decoder.VideoDecoderInputBuffer;
 import com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer;
 import com.google.android.exoplayer2.util.Assertions;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-
-import lib.kalu.exoplayer2.util.ExoLogUtil;
 
 /**
  * Ffmpeg Video decoder.
@@ -97,7 +96,6 @@ import lib.kalu.exoplayer2.util.ExoLogUtil;
             } catch (Exception e) {
                 num = 0;
             }
-            ExoLogUtil.log("FfmpegVideoDecoder => getExtraData => mimeType = " + mimeType + ", num = " + num);
             if (num <= 0)
                 throw new Exception();
 
@@ -215,11 +213,7 @@ import lib.kalu.exoplayer2.util.ExoLogUtil;
         if (!decodeOnly) {
             outputBuffer.format = inputBuffer.format;
         }
-        ExoLogUtil.log("decodeOnly: " + decodeOnly);
 
-        if (needSendAgain) {
-            ExoLogUtil.log("timeUs=" + inputBuffer.timeUs + ", " + "nendSendAagin");
-        }
 
         return null;
     }
