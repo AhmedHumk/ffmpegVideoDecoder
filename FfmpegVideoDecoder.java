@@ -11,7 +11,6 @@ import com.google.android.exoplayer2.util.Util;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-/* loaded from: lib_mediaplayer_exo_r2.18.2_ff4.4_video_release_20230116.aar:classes.jar:com/google/android/exoplayer2/ext/ffmpeg/FfmpegVideoDecoder.class */
 final class FfmpegVideoDecoder extends SimpleDecoder<VideoDecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException> {
     private static final int VIDEO_DECODER_SUCCESS = 0;
     private static final int VIDEO_DECODER_ERROR_INVALID_DATA = -1;
