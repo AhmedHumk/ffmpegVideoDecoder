@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.decoder.SimpleDecoder;
-import com.google.android.exoplayer2.decoder.VideoDecoderInputBuffer;
+import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
 import com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.Log;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 /* package */ final class FfmpegVideoDecoder
         extends
-        SimpleDecoder<VideoDecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException> {
+        SimpleDecoder<DecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException> {
 
     // LINT.IfChange
     private static final int VIDEO_DECODER_SUCCESS = 0;
@@ -67,7 +67,7 @@ import java.util.List;
             int numInputBuffers, int numOutputBuffers, int initialInputBufferSize, int threads, Format format)
             throws FfmpegDecoderException {
         super(
-                new VideoDecoderInputBuffer[numInputBuffers],
+                new DecoderInputBuffer[numInputBuffers],
                 new VideoDecoderOutputBuffer[numOutputBuffers]);
         if (!FfmpegLibrary.isAvailable()) {
             throw new FfmpegDecoderException("Failed to load decoder native library.");
@@ -158,8 +158,8 @@ import java.util.List;
     }
 
     @Override
-    protected VideoDecoderInputBuffer createInputBuffer() {
-        return new VideoDecoderInputBuffer(VideoDecoderInputBuffer.BUFFER_REPLACEMENT_MODE_DIRECT);
+    protected DecoderInputBuffer createInputBuffer() {
+        return new DecoderInputBuffer(DecoderInputBuffer.BUFFER_REPLACEMENT_MODE_DIRECT);
     }
 
     @Override
@@ -170,7 +170,7 @@ import java.util.List;
     @Override
     @Nullable
     protected FfmpegDecoderException decode(
-            VideoDecoderInputBuffer inputBuffer, VideoDecoderOutputBuffer outputBuffer, boolean reset) {
+            DecoderInputBuffer inputBuffer, VideoDecoderOutputBuffer outputBuffer, boolean reset) {
         if (reset) {
             nativeContext = ffmpegReset(nativeContext);
             if (nativeContext == 0) {
