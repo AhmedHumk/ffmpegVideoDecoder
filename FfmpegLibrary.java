@@ -23,8 +23,6 @@ import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.util.MimeTypes;
 
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-
 /**
  * Configures and queries the underlying native library.
  */
@@ -44,7 +42,7 @@ public final class FfmpegLibrary {
         ExoPlayerLibraryInfo.registerModule("goog.exo.ffmpeg");
     }
 
-    private static @MonotonicNonNull String version;
+    private static String version;
     private static int inputBufferPaddingSize = C.LENGTH_UNSET;
 
     private FfmpegLibrary() {
@@ -62,9 +60,9 @@ public final class FfmpegLibrary {
         if (!isAvailable()) {
             return null;
         }
-        if (version == null) {
+
             version = ffmpegGetVersion();
-        }
+
         return version;
     }
 
