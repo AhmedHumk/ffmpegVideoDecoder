@@ -1,0 +1,14 @@
+prefix=/home/ubuntu/Desktop/ExoPlayer/build/ffmpeg/android/arm64-v8a
+exec_prefix=${prefix}
+libdir=/home/ubuntu/Desktop/ExoPlayer/build/ffmpeg/android/arm64-v8a/lib
+includedir=/home/ubuntu/Desktop/ExoPlayer/build/ffmpeg/android/arm64-v8a/include
+
+Name: libavresample
+Description: Libav audio resampling library
+Version: 4.0.0
+Requires: libavutil >= 56.70.100
+Requires.private: 
+Conflicts:
+Libs: -L${libdir}  -lavresample -lm
+Libs.private: 
+Cflags: -I${includedir}
