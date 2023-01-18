@@ -28,14 +28,12 @@ import android.view.Surface;
 import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.PlayerMessage.Target;
 import com.google.android.exoplayer2.RendererCapabilities;
 import com.google.android.exoplayer2.decoder.CryptoConfig;
 import com.google.android.exoplayer2.decoder.Decoder;
-import com.google.android.exoplayer2.decoder.DecoderException;
 import com.google.android.exoplayer2.decoder.DecoderInputBuffer;
 import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation;
 import com.google.android.exoplayer2.decoder.VideoDecoderOutputBuffer;
@@ -142,30 +140,16 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
     @Capabilities
     public final int supportsFormat(Format format) {
 
-//    String mimeType = Assertions.checkNotNull(format.sampleMimeType);
-//    if (!FfmpegLibrary.isAvailable() || !MimeTypes.isVideo(mimeType)) {
-//      return FORMAT_UNSUPPORTED_TYPE;
-//    } else if (!FfmpegLibrary.supportsFormat(format.sampleMimeType)) {
-//      return RendererCapabilities.create(FORMAT_UNSUPPORTED_SUBTYPE);
-//    } else if (format.drmInitData != null && format.exoMediaCryptoType == null) {
-//      return RendererCapabilities.create(FORMAT_UNSUPPORTED_DRM);
-//    } else {
-//      return RendererCapabilities.create(
-//              FORMAT_HANDLED,
-//              ADAPTIVE_SEAMLESS,
-//              TUNNELING_NOT_SUPPORTED);
-//    }
-
         String mimeType = Assertions.checkNotNull(format.sampleMimeType);
         if (!FfmpegLibrary.isAvailable() || !MimeTypes.isVideo(mimeType)) {
-            return FORMAT_UNSUPPORTED_TYPE;
+            return C.FORMAT_UNSUPPORTED_TYPE;
         } else if (!FfmpegLibrary.supportsFormat(format)) {
-            return RendererCapabilities.create(FORMAT_UNSUPPORTED_SUBTYPE);
+            return RendererCapabilities.create(C.FORMAT_UNSUPPORTED_SUBTYPE);
         } else if (format.drmInitData != null) {
-            return RendererCapabilities.create(FORMAT_UNSUPPORTED_DRM);
+            return RendererCapabilities.create(C.FORMAT_UNSUPPORTED_DRM);
         } else {
             return RendererCapabilities.create(
-                    FORMAT_HANDLED,
+                    C.FORMAT_HANDLED,
                     ADAPTIVE_SEAMLESS,
                     TUNNELING_NOT_SUPPORTED);
         }
@@ -176,23 +160,16 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
         TraceUtil.beginSection("createFfmpegVideoDecoder");
         int initialInputBufferSize =
                 format.maxInputSize != Format.NO_VALUE ? format.maxInputSize : DEFAULT_INPUT_BUFFER_SIZE;
-        Decoder decoder = new FfmpegVideoDecoder(numInputBuffers, numOutputBuffers, initialInputBufferSize, threads, format);
-        this.decoder = (FfmpegVideoDecoder) decoder;
+        Decoder newdecoder = new FfmpegVideoDecoder(numInputBuffers, numOutputBuffers, initialInputBufferSize, threads, format);
+        this.decoder = (FfmpegVideoDecoder) newdecoder;
         TraceUtil.endSection();
         Log.d(TAG, "createDecoder: " + decoder);
-        return decoder;
+        return newdecoder;
     }
 
-    //  @Override
-//  protected Decoder<VideoDecoderInputBuffer, VideoDecoderOutputBuffer, FfmpegDecoderException>
-//  createDecoder(Format format, @Nullable CryptoInfo mediaCrypto)
-//          throws FfmpegDecoderException {
-//
-//  }
 
     @Override
-    protected void renderOutputBufferToSurface(VideoDecoderOutputBuffer outputBuffer, Surface surface)
-            throws FfmpegDecoderException {
+    protected void renderOutputBufferToSurface(VideoDecoderOutputBuffer outputBuffer, Surface surface) {
         try {
             if (decoder == null) {
                 throw new FfmpegDecoderException(
@@ -201,6 +178,7 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
             decoder.renderToSurface(outputBuffer, surface);
             outputBuffer.release();
         } catch (Exception e) {
+            Log.d("renderOutputBufferToSurface",e.toString());
         }
     }
 
@@ -217,7 +195,7 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
     }
 
     @Override
-    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed) throws ExoPlaybackException {
+    public void setPlaybackSpeed(float currentPlaybackSpeed, float targetPlaybackSpeed) {
 
     }
 
@@ -232,17 +210,4 @@ public class FfmpegVideoRenderer extends DecoderVideoRenderer {
                 sameMimeType ? REUSE_RESULT_YES_WITHOUT_RECONFIGURATION : REUSE_RESULT_NO,
                 sameMimeType ? 0 : DISCARD_REASON_MIME_TYPE_CHANGED);
     }
-
-    // PlayerMessage.Target implementation.
-
-//  @Override
-//  public void handleMessage(int messageType, @Nullable Object message) throws ExoPlaybackException {
-//    if (messageType == MSG_SET_SURFACE) {
-//      setOutputSurface((Surface) message);
-//    } else if (messageType == MSG_SET_VIDEO_DECODER_OUTPUT_BUFFER_RENDERER) {
-//      setOutputBufferRenderer((VideoDecoderOutputBufferRenderer) message);
-//    } else {
-//      super.handleMessage(messageType, message);
-//    }
-//  }
 }

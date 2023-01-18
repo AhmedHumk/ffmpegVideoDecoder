@@ -49,7 +49,7 @@ import java.util.List;
     private final String codecName;
     private long nativeContext;
     @Nullable
-    private final byte[] extraData;
+    private byte[] extraData;
     @C.VideoOutputMode
     private volatile int outputMode;
 
@@ -73,6 +73,9 @@ import java.util.List;
             throw new FfmpegDecoderException("Failed to load decoder native library.");
         }
         codecName = Assertions.checkNotNull(FfmpegLibrary.getCodecName(format));
+        if (format.sampleMimeType == null) {
+            return;
+        }
         extraData = getExtraData(format.sampleMimeType, format.initializationData);
         nativeContext = ffmpegInitialize(codecName, extraData, threads);
         if (nativeContext == 0) {
@@ -88,8 +91,6 @@ import java.util.List;
     @Nullable
     private static byte[] getExtraData(String mimeType, List<byte[]> list) {
         try {
-            if (null == list)
-                throw new Exception();
             int num;
             try {
                 num = list.size();
@@ -116,31 +117,6 @@ import java.util.List;
         } catch (Exception e) {
             return null;
         }
-
-//        switch (mimeType) {
-//            case MimeTypes.VIDEO_H264:
-//                try {
-//                    byte[] sps = data.get(0);
-//                    byte[] pps = data.get(1);
-//                    byte[] extra = new byte[sps.length + pps.length];
-//                    System.arraycopy(sps, 0, extra, 0, sps.length);
-//                    System.arraycopy(pps, 0, extra, sps.length, pps.length);
-//                    return extra;
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//            case MimeTypes.VIDEO_H265:
-//            case MimeTypes.VIDEO_MPEG2:
-//                try {
-//                    byte[] bytes = data.get(0);
-//                    return bytes;
-//                } catch (Exception e) {
-//                    return null;
-//                }
-//            default:
-//                // Other codecs do not require extra data.
-//                return null;
-//        }
     }
 
     @Override

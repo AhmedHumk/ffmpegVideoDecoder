@@ -34,8 +34,7 @@ public final class FfmpegLibrary {
     }
 
     static void loadLibrary() {
-        System.loadLibrary("exoplayer-ffmpeg");
-        System.loadLibrary("exoplayer-ffmpeg-jni");
+        System.loadLibrary("ffmpegJNI");
     }
 
     static void registerModule() {
