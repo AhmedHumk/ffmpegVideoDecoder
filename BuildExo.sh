@@ -7,7 +7,8 @@ ENABLED_DECODERS=(alac pcm_mulaw pcm_alaw mp3 aac ac3 eac3 dca mlp truehd h264 h
 
 FFMPEG_PATH="$(pwd)/ffmpeg"
 
-cd ffmpeg && \
+#git clone https://github.com/google/ExoPlayer.git
+# enter the Exoplayer Folder and copy this .sh file inside it.
 git clone git://source.ffmpeg.org/ffmpeg && \
 cd ffmpeg && \
 git checkout release/4.2 && \
