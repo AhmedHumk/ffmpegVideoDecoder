@@ -35,7 +35,7 @@ public final class FfmpegLibrary {
   private static final String TAG = "FfmpegLibrary";
 
   private static final LibraryLoader LOADER =
-      new LibraryLoader("avutil", "swresample", "avcodec", "ffmpeg_jni"){
+      new LibraryLoader("ffmpegJNI"){
         @Override
         protected void loadLibrary(String name) {
           System.loadLibrary(name);
